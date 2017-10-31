@@ -26,7 +26,7 @@ public class LambdaFunctionHandler implements RequestHandler<Record, ResponseDat
         logger.log("[" + new Date() + "]input:" + JSONObject.toJSONString(input));
         try {
             IAddRecordService service = new AddRecordServiceImpl();
-            service.addRecord(input);
+            service.addRecord(input,context);
             return new ResponseData(ResponseData.RESPONSE_CODE_SUCCESS, "add success");
         } catch (AddRecordException e) {
             logger.log("[" + new Date() + "]exception:" + e.getMsg());

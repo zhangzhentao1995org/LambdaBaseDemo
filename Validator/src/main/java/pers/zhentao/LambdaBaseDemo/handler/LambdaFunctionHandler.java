@@ -27,14 +27,25 @@ import pers.zhentao.LambdaBaseDemo.util.TokenUtil;
  * 		   2017-10-30
  */
 public class LambdaFunctionHandler implements RequestHandler<RequestInfo, ResponseData> {
-    private static final String awsAccessKeyId = "AKIAJ7LVEP4U2NG6ZNHQ";
-    private static final String awsSecretAccessKey = "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";
-    private static final String regionName = "ap-southeast-2";
+    private static String awsAccessKeyId = null;
+    private static String awsSecretAccessKey = null;
+    private static String regionName = null;
+    private static String jwtSecret = null;
 
     public ResponseData handleRequest(RequestInfo input, Context context) {
         LambdaLogger logger = context.getLogger();
+        awsAccessKeyId = System.getenv("ACCESS_KEY");
+        awsSecretAccessKey = System.getenv("SECRET_KEY");
+        regionName = System.getenv("REGION");
+        jwtSecret = System.getenv("JWT_SECRET");
+        if(awsAccessKeyId == null || awsSecretAccessKey == null || regionName == null) {
+            return new ResponseData(ResponseData.RESPONSE_CODE_ERROR, "aws config is null.");
+        }
+        if(jwtSecret == null) {
+            return new ResponseData(ResponseData.RESPONSE_CODE_ERROR, "jwtSecret is null.");
+        }
         logger.log("[" + new Date() + "]RequestInfo:" + JSONObject.toJSONString(input));
-        User user = TokenUtil.validateToken(input.getToken());
+        User user = TokenUtil.validateToken(input.getToken(), jwtSecret);
         logger.log("[" + new Date() + "]user:" + JSONObject.toJSONString(user));
         if (user == null) {
             return new ResponseData(ResponseData.RESPONSE_CODE_ERROR, "invalid token.");

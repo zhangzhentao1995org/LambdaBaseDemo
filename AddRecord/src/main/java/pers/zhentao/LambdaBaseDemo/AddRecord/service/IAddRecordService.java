@@ -1,5 +1,7 @@
 package pers.zhentao.LambdaBaseDemo.AddRecord.service;
 
+import com.amazonaws.services.lambda.runtime.Context;
+
 import pers.zhentao.LambdaBaseDemo.AddRecord.dto.Record;
 import pers.zhentao.LambdaBaseDemo.AddRecord.exception.AddRecordException;
 
@@ -15,5 +17,5 @@ public interface IAddRecordService {
      * @param record
      * @exception AddRecordException
      */
-    public void addRecord(Record record) throws AddRecordException;
+    public void addRecord(Record record, Context context) throws AddRecordException;
 }

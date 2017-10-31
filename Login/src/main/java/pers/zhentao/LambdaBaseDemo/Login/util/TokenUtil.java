@@ -13,9 +13,9 @@ import pers.zhentao.LambdaBaseDemo.Login.dto.User;
  */
 public class TokenUtil {
 
-    public static User validateToken(String token) {
+    public static User validateToken(String token, String jwtSecret) {
         try {
-            Claims claims = JwtUtil.parseJwt(token);
+            Claims claims = JwtUtil.parseJwt(token,jwtSecret);
             String subject = claims.getSubject();
             User user = JSONObject.toJavaObject(JSONObject.parseObject(subject), User.class);
             return user;
@@ -26,11 +26,11 @@ public class TokenUtil {
         return null;
     }
 
-    public static String getToken(User user) {
+    public static String getToken(User user, String jwtSecret) {
         String subject = JwtUtil.generalSubject(user);
         String token = null;
         try {
-            token = JwtUtil.createJwt(Constant.JWT_ID, subject, Constant.JWT_TTL);
+            token = JwtUtil.createJwt(Constant.JWT_ID, jwtSecret, subject, Constant.JWT_TTL);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

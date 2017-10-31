@@ -8,7 +8,8 @@
     username:<input id="username" type="text">
     password:<input id="password" type="text">
     email:<input id="email" type="text">
-    <button onclick=register()>注册</button>
+    <button onclick=register()>注册</button><br/>
+<textarea id="result" style="width:80%;height:300px;"></textarea>
 </body>
 <script src="js/jquery-3.2.1.min.js"></script>
 <script>
@@ -26,7 +27,7 @@ function register(){
 		type:"post",
 		data:JSON.stringify(params),
 		success:function(data){
-			alert(JSON.stringify(data));
+			$("#result").text(JSON.stringify(data));
 		}
 	});
 }

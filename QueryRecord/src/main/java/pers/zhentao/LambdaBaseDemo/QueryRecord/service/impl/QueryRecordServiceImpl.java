@@ -17,13 +17,19 @@ public class QueryRecordServiceImpl implements IQueryRecordService {
      * RDS数据库配置信息
      */
     private final String driver = "com.mysql.cj.jdbc.Driver";
-    private final String url = "jdbc:mysql://lambdabasedemodb.cloqkold5jlj.ap-southeast-2.rds.amazonaws.com:3306/lambdabasedemodb";
-    private final String username = "root";
-    private final String password = "lambdabasedemodb";
+    private String url = null;
+    private String username = null;
+    private String password = null;
     private final String QUERY_SQL = "select * from address_book";
 
     @Override
     public List<Record> queryAll() throws QueryRecordException {
+        url = System.getenv("DB_URL");
+        username = System.getenv("USERNAME");
+        password = System.getenv("PASSWORD");
+        if(url == null || username == null || password == null) {
+            throw new QueryRecordException(QueryRecordException.SYS_ERROR_CODE, "db config is null.");
+        }
         try {
             Class.forName(driver);
         } catch (ClassNotFoundException e) {

@@ -22,18 +22,17 @@ import pers.zhentao.LambdaBaseDemo.Login.dto.User;
  */
 public class JwtUtil {
 
-    public static SecretKey generalKey() {
-        String stringKey = Constant.JWT_SECRET;
-        byte[] encodeKey = Base64.getDecoder().decode(stringKey);
+    public static SecretKey generalKey(String jwtSecret) {
+        byte[] encodeKey = Base64.getDecoder().decode(jwtSecret);
         SecretKey key = new SecretKeySpec(encodeKey, 0, encodeKey.length, "AES");
         return key;
     }
 
-    public static String createJwt(String id, String subject, long ttlMillis) throws Exception {
+    public static String createJwt(String id, String jwtSecret, String subject, long ttlMillis) throws Exception {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
-        SecretKey key = generalKey();
+        SecretKey key = generalKey(jwtSecret);
         JwtBuilder builder = Jwts.builder().setId(id).setIssuedAt(now).setSubject(subject).signWith(signatureAlgorithm,
                 key);
         if (ttlMillis >= 0) {
@@ -44,8 +43,8 @@ public class JwtUtil {
         return builder.compact();
     }
 
-    public static Claims parseJwt(String jwt) throws Exception {
-        SecretKey key = generalKey();
+    public static Claims parseJwt(String jwt, String jwtSecret) throws Exception {
+        SecretKey key = generalKey(jwtSecret);
         Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(jwt).getBody();
         return claims;
     }

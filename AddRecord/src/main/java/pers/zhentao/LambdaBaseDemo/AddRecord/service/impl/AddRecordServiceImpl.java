@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import com.amazonaws.services.lambda.runtime.Context;
+
 import pers.zhentao.LambdaBaseDemo.AddRecord.dto.Record;
 import pers.zhentao.LambdaBaseDemo.AddRecord.exception.AddRecordException;
 import pers.zhentao.LambdaBaseDemo.AddRecord.service.IAddRecordService;
@@ -14,14 +16,20 @@ public class AddRecordServiceImpl implements IAddRecordService {
      * RDS数据库配置信息
      */
     private final String driver = "com.mysql.cj.jdbc.Driver";
-    private final String url = "jdbc:mysql://lambdabasedemodb.cloqkold5jlj.ap-southeast-2.rds.amazonaws.com:3306/lambdabasedemodb";
-    private final String username = "root";
-    private final String password = "lambdabasedemodb";
+    private String url = null;
+    private String username = null;
+    private String password = null;
     private final String INSERT_SQL = "insert into address_book (name,phone_number,address,telephone_number,note,created_by) value (?,?,?,?,?,?)";
     private final String UPDATE_SQL = "update address_book set name=?,phone_number=?,address=?,telephone_number=?,note=? where address_book_id=?";
 
     @Override
-    public void addRecord(Record record) throws AddRecordException {
+    public void addRecord(Record record, Context context) throws AddRecordException {
+        url = System.getenv("DB_URL");
+        username = System.getenv("USERNAME");
+        password = System.getenv("PASSWORD");
+        if(url == null || username == null || password == null) {
+            throw new AddRecordException(AddRecordException.SYS_ERROR_CODE, "db config is null.");
+        }
         try {
             Class.forName(driver);
         } catch (ClassNotFoundException e) {

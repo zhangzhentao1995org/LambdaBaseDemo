@@ -14,12 +14,18 @@ public class DeleteRecordServiceImpl implements IDeleteRecordService {
      * RDS数据库配置信息
      */
     private final String driver = "com.mysql.cj.jdbc.Driver";
-    private final String url = "jdbc:mysql://lambdabasedemodb.cloqkold5jlj.ap-southeast-2.rds.amazonaws.com:3306/lambdabasedemodb";
-    private final String username = "root";
-    private final String password = "lambdabasedemodb";
+    private String url = null;
+    private String username = null;
+    private String password = null;
     private final String DELETE_SQL = "delete from address_book where address_book_id=?";
 
     public void deleteRecord(Integer id) throws DeleteRecordException {
+        url = System.getenv("DB_URL");
+        username = System.getenv("USERNAME");
+        password = System.getenv("PASSWORD");
+        if(url == null || username == null || password == null) {
+            throw new DeleteRecordException(DeleteRecordException.SYS_ERROR_CODE, "db config is null.");
+        }
         try {
             Class.forName(driver);
         } catch (ClassNotFoundException e) {

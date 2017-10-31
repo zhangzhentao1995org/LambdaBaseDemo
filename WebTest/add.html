@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Test add/update</title>
+</head>
+<body>
+addressBookId:<input id="addressBookId" type="text"><br/>
+name:<input id="name" type="text"><br/>
+phoneNumber:<input id="phoneNumber" type="text"><br/>
+address:<input id="address" type="text"><br/>
+telephoneNumber:<input id="telephoneNumber" type="text"><br/>
+note:<input id="note" type="text"><br/>
+
+token:<input type="text" id="token"><br/>
+<button onclick=add()>add</button><br/>
+<textarea id="result" style="width:80%;height:300px;"></textarea>
+</body>
+<script src="js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+function add(){
+	var addressBookId = $("#addressBookId").val();
+    var name = $("#name").val();
+    var phoneNumber = $("#phoneNumber").val();
+    var address = $("#address").val();
+    var telephoneNumber = $("#telephoneNumber").val();
+    var note = $("#note").val();
+    var createTime = $("#createTime").val();
+    var createBy = $("#createBy").val();
+    var params = {
+    		name:name,
+    		phoneNumber:phoneNumber,
+    		address:address,
+    		telephoneNumber:telephoneNumber,
+    		note:note
+    };
+    if(addressBookId != "")
+    	params.addressBookId = addressBookId;
+    var token = $("#token").val();
+    var target = 3001;
+    var paramJson = {
+    		token:token,
+    		target:target,
+    		paramJson:JSON.stringify(params)
+    }
+    $.ajax({
+        url:"https://53zhyiugqf.execute-api.ap-southeast-2.amazonaws.com/beta/operation",
+        type:"post",
+        data:JSON.stringify(paramJson),
+        success:function(data){
+        	$("#result").text(JSON.stringify(data));
+        }
+    });
+}
+</script>
+</html>
